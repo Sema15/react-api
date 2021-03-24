@@ -3,7 +3,6 @@ import '../App.css';
 import {observer} from 'mobx-react';
 import Moment from 'moment';
 import InputMask from 'react-input-mask';
-import button from "eslint-plugin-jsx-a11y/lib/util/implicitRoles/button";
 
 @observer
 class App extends Component {
