@@ -3,6 +3,7 @@ import '../App.css';
 import {observer} from 'mobx-react';
 import Moment from 'moment';
 import InputMask from 'react-input-mask';
+import button from "eslint-plugin-jsx-a11y/lib/util/implicitRoles/button";
 
 @observer
 class App extends Component {
@@ -11,17 +12,19 @@ class App extends Component {
     super(props);
     this.state = {
       users: [],
-      name: '',
-      surname: '',
-      dob: '',
-      phone: '',
-      email: ''
+      button: 1,
+      user: {
+        name: '',
+        surname: '',
+        dob: '',
+        phone: '',
+        email: ''
+      }
     };
 
-    this.create = this.create.bind(this);
-    this.update = this.update.bind(this);
     this.delete = this.delete.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.handleInput = this.handleInput.bind(this);
   }
 
   API_KEY = 'b39b649d28msh5237f7a0c53af84p1f3fb2jsne97795af1f05';
@@ -46,74 +49,71 @@ class App extends Component {
         });
   }
 
-  create(e) {
-    // add entity - POST
+  onSubmit(e) {
     e.preventDefault();
-
-    // creates entity
-    fetch("https://fairestdb.p.rapidapi.com/users/user", {
-      "method": "POST",
-      "headers": {
-        "x-rapidapi-host": "fairestdb.p.rapidapi.com",
-        "x-rapidapi-key": this.API_KEY,
-        "content-type": "application/json",
-        "accept": "application/json"
-      },
-      "body": JSON.stringify({
-        name: this.state.name,
-        surname: this.state.surname,
-        dob: this.state.dob,
-        phone: this.state.phone,
-        email: this.state.email
-      })
-    })
-        .then(response => response.json())
-        .then(response => {
-          console.log(response)
-          this.clearFormInputs();
-          this.componentDidMount();
+    if (this.state.button === 1) {
+      fetch("https://fairestdb.p.rapidapi.com/users/user", {
+        "method": "POST",
+        "headers": {
+          "x-rapidapi-host": "fairestdb.p.rapidapi.com",
+          "x-rapidapi-key": this.API_KEY,
+          "content-type": "application/json",
+          "accept": "application/json"
+        },
+        "body": JSON.stringify({
+          name: this.state.user.name,
+          surname: this.state.user.surname,
+          dob: this.state.user.dob,
+          phone: this.state.user.phone,
+          email: this.state.user.email
         })
-        .catch(err => {
-          alert(err);
-        });
-    this.componentDidMount();
-  }
-
-  update(e) {
-    // update entity - PUT
-    e.preventDefault();
-
-    // this will update entries with PUT
-    fetch("https://fairestdb.p.rapidapi.com/users/user", {
-      "method": "PUT",
-      "headers": {
-        "x-rapidapi-host": "fairestdb.p.rapidapi.com",
-        "x-rapidapi-key": this.API_KEY,
-        "content-type": "application/json",
-        "accept": "application/json"
-      },
-      "body": JSON.stringify({
-        _id: this.state.id,
-        name: this.state.name,
-        surname: this.state.surname,
-        dob: this.state.dob,
-        phone: this.state.phone,
-        email: this.state.email
       })
-    })
-        .then(response => response.json())
-        .then(response => {
-          if (response.errorCode === 400){
-            alert('id is not defined');
-          } else {
-            this.clearFormInputs();
+          .then(response => response.json())
+          .then(response => {
+            console.log(response)
+            this.clearFormInputs(e);
             this.componentDidMount();
-          }
+          })
+          .catch(err => {
+            alert(err);
+          });
+    }
+    if (this.state.button === 0) {
+      fetch("https://fairestdb.p.rapidapi.com/users/user", {
+        "method": "PUT",
+        "headers": {
+          "x-rapidapi-host": "fairestdb.p.rapidapi.com",
+          "x-rapidapi-key": this.API_KEY,
+          "content-type": "application/json",
+          "accept": "application/json"
+        },
+        "body": JSON.stringify({
+          _id: this.state.user.id,
+          name: this.state.user.name,
+          surname: this.state.user.surname,
+          dob: this.state.user.dob,
+          phone: this.state.user.phone,
+          email: this.state.user.email
         })
-        .catch(err => {
-          alert(err);
-        });
-  }
+      })
+          .then(response => response.json())
+          .then(response => {
+            if (response.errorCode === 400) {
+              alert('id is not defined');
+            } else {
+              this.clearFormInputs(e);
+              this.componentDidMount();
+              this.setState({
+                isUpdate: true,
+              })
+            }
+
+          })
+          .catch(err => {
+            alert(err);
+          });
+    }
+  };
 
 
   delete(e, userId) {
@@ -137,45 +137,53 @@ class App extends Component {
         });
   }
 
-  clearFormInputs() {
-    Object.values(this.refs).map(input => input.value = '');
+  clearFormInputs(e) {
+    e.preventDefault();
     this.setState({
-      id: '',
-      name: '',
-      surname: '',
-      dob: '',
-      phone: '',
-      email: ''
+      button: 1,
+      user: {
+        id: '',
+        name: '',
+        surname: '',
+        dob: '',
+        phone: '',
+        email: ''
+      }
     });
   }
 
   completeInputs(e, user) {
-    console.log(document.getElementsByClassName('form-control'));
     this.setState({
-      id: user._id,
-      name: user.name,
-      surname: user.surname,
-      dob: user.dob,
-      phone: user.phone,
-      email: user.email
+      button: 0,
+      user: {
+        id: user._id,
+        name: user.name,
+        surname: user.surname,
+        dob: user.dob,
+        phone: user.phone,
+        email: user.email
+      }
     });
-    this.refs.id.value = user._id;
-    this.refs.name.value = user.name;
-    this.refs.surname.value = user.surname;
-    this.refs.dob.value = user.dob;
-    this.refs.phone.value = user.phone;
-    this.refs.email.value = user.email;
   }
 
-  handleChange(changeObject) {
-    this.setState(changeObject)
+  handleInput(e) {
+    let value = e.target.value;
+    let name = e.target.name;
+    this.setState(prevState => {
+          return {
+            user: {
+              ...prevState.user, [name]: value
+            }
+          }
+        }
+    )
   }
 
   render() {
     return (
         <div className="container">
           <div>
-            <form>
+            <form onSubmit={(e) => this.onSubmit(e)}>
               <div className="row">
                 <div className="col-25">
                   <label htmlFor="id">User ID:</label>
@@ -189,8 +197,8 @@ class App extends Component {
                       readOnly
                       disabled
                       className="form-control"
-                      value={this.state.id}
-                      onChange={(e) => this.handleChange({id: e.target.value})}
+                      value={this.state.user.id}
+                      onChange={(e) => this.handleInput(e)}
                   />
                 </div>
               </div>
@@ -206,8 +214,8 @@ class App extends Component {
                       type="text"
                       maxLength='60'
                       className="form-control"
-                      value={this.state.name}
-                      onChange={(e) => this.handleChange({name: e.target.value})}
+                      value={this.state.user.name}
+                      onChange={(e) => this.handleInput(e)}
                       required
                   />
                 </div>
@@ -224,8 +232,8 @@ class App extends Component {
                       type="text"
                       maxLength='60'
                       className="form-control"
-                      value={this.state.surname}
-                      onChange={(e) => this.handleChange({surname: e.target.value})}
+                      value={this.state.user.surname}
+                      onChange={(e) => this.handleInput(e)}
                       required
                   />
                 </div>
@@ -235,15 +243,15 @@ class App extends Component {
                   <label htmlFor="dob">User date-of-birthday:</label>
                 </div>
                 <div className="col-75">
-                  <InputMask mask="99-999999"
-                      name="dob"
-                      id="dob"
-                      ref='dob'
-                      type="text"
-                      className="form-control"
-                      value={this.state.dob}
-                      onChange={(e) => this.handleChange({dob: e.target.value})}
-                      required
+                  <InputMask mask="99.99.9999"
+                             name="dob"
+                             id="dob"
+                             ref='dob'
+                             type="text"
+                             className="form-control"
+                             value={this.state.user.dob}
+                             onChange={(e) => this.handleInput(e)}
+                             required
                   />
                 </div>
               </div>
@@ -252,14 +260,16 @@ class App extends Component {
                   <label htmlFor="phone">User phone:</label>
                 </div>
                 <div className="col-75">
-                  <InputMask mask="0999999999"
+                  <InputMask mask="0(99)9999999"
                              name="phone"
                              id="phone"
                              ref='phone'
                              type="text"
                              className="form-control"
-                             value={this.state.phone}
-                             onChange={(e) => this.handleChange({phone: e.target.value})}/>
+                             value={this.state.user.phone}
+                             onChange={(e) => this.handleInput(e)}
+                             required
+                  />
                 </div>
               </div>
               <div className="row">
@@ -273,21 +283,21 @@ class App extends Component {
                       ref='email'
                       type="text"
                       className="form-control"
-                      value={this.state.email}
-                      onChange={(e) => this.handleChange({email: e.target.value})}
+                      value={this.state.user.email}
+                      onChange={(e) => this.handleInput(e)}
                       required
                   />
                 </div>
               </div>
               <div className="form-btns__wrp">
-                <button type='button' onClick={(e) => this.create(e)}>
+                <button type="submit" onClick={() => (this.setState({button: 1}))}>
                   Add
                 </button>
-                <button type='button' onClick={(e) => this.update(e)}>
+                <button disabled={this.state.button} type="submit" onClick={() => (this.setState({button: 0}))}>
                   Update
                 </button>
                 <button type='button' onClick={(e) => this.clearFormInputs(e)}>
-                  clear
+                  Clear
                 </button>
               </div>
             </form>
@@ -306,8 +316,8 @@ class App extends Component {
                 <th>Update&nbsp;user&nbsp;date</th>
                 <th></th>
               </tr>
-              {this.state && this.state.users.map(user => {
-                return <tr>
+              {this.state && this.state.users.map((user, index) => {
+                return <tr key={index}>
                   <td>{user._id}</td>
                   <td>{user.name}</td>
                   <td>{user.surname}</td>
