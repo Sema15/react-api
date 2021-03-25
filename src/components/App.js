@@ -3,6 +3,8 @@ import '../App.css';
 import {observer} from 'mobx-react';
 import Moment from 'moment';
 import InputMask from 'react-input-mask';
+import ReactPaginate from 'react-paginate';
+import "./paginationStyle.css";
 
 @observer
 class App extends Component {
@@ -12,6 +14,11 @@ class App extends Component {
     this.state = {
       users: [],
       button: 1,
+      offset: 0,
+      data: [],
+      paginationData: [],
+      perPage: 10,
+      currentPage: 0,
       user: {
         name: '',
         surname: '',
@@ -24,12 +31,18 @@ class App extends Component {
     this.delete = this.delete.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.handleInput = this.handleInput.bind(this);
+    this.handlePageClick = this.handlePageClick.bind(this);
   }
+
 
   API_KEY = 'b39b649d28msh5237f7a0c53af84p1f3fb2jsne97795af1f05';
 
+
   componentDidMount() {
-    // get all entities - GET
+    this.receivedData()
+  }
+
+  receivedData() {
     fetch("https://fairestdb.p.rapidapi.com/users/user", {
       "method": "GET",
       "headers": {
@@ -42,11 +55,28 @@ class App extends Component {
           this.setState({
             users: response
           })
+          const postData = this.state.users.slice(this.state.offset, this.state.offset + this.state.perPage)
+          this.setState({
+            pageCount: Math.ceil(this.state.users.length / this.state.perPage),
+            paginationData: postData
+          })
         })
         .catch(err => {
           console.log(err);
         });
   }
+
+  handlePageClick = (e) => {
+    const selectedPage = e.selected;
+    const offset = selectedPage * this.state.perPage;
+
+    this.setState({
+      currentPage: selectedPage,
+      offset: offset
+    }, () => {
+      this.receivedData()
+    });
+  };
 
   onSubmit(e) {
     e.preventDefault();
@@ -178,6 +208,17 @@ class App extends Component {
     )
   }
 
+  // getSocialIcons() {
+  //   return [
+  //     {text: 'User ID:', name: 'id'},
+  //     {text: 'User name:', name: 'name'},
+  //     {text: 'User surname:', name: 'surname'},
+  //     {text: 'User date-of-birthday:', name: 'dob', mask: '99.99.9999'},
+  //     {text: 'User phone:', name: 'phone', mask: '0(99)9999999'},
+  //     {text: 'User email:', name: 'email'},
+  //   ]
+  // }
+
   render() {
     return (
         <div className="container">
@@ -301,10 +342,11 @@ class App extends Component {
               </div>
             </form>
           </div>
-          <div style={{overflowX: 'auto'}}>
+          <div className='userList'>
             <table>
               <tbody>
               <tr>
+                <th>№</th>
                 <th>ID</th>
                 <th>Name</th>
                 <th>Surname</th>
@@ -315,24 +357,40 @@ class App extends Component {
                 <th>Update&nbsp;user&nbsp;date</th>
                 <th></th>
               </tr>
-              {this.state && this.state.users.map((user, index) => {
-                return <tr key={index}>
-                  <td>{user._id}</td>
-                  <td>{user.name}</td>
-                  <td>{user.surname}</td>
-                  <td>{user.dob}</td>
-                  <td>{user.phone}</td>
-                  <td>{user.email}</td>
-                  <td>{Moment(user._tags._createdOn).format('DD-MM-YYYY HH:mm')}</td>
-                  <td>{Moment(user._tags._lastModifiedOn).format('DD-MM-YYYY HH:mm')}</td>
-                  <td>
-                    <button type='button' onClick={(e) => this.delete(e, user._id)}>Delete</button>
-                    <button type='button' onClick={(e) => this.completeInputs(e, user)}>Update</button>
-                  </td>
-                </tr>
+
+              {this.state && this.state.paginationData.map((user, index) => {
+                return <React.Fragment key={index}>
+                  <tr>
+                    <td>{index + 1}</td>
+                    <td>{user._id}</td>
+                    <td>{user.name}</td>
+                    <td>{user.surname}</td>
+                    <td>{user.dob}</td>
+                    <td>{user.phone}</td>
+                    <td>{user.email}</td>
+                    <td>{Moment(user._tags._createdOn).format('DD-MM-YYYY HH:mm')}</td>
+                    <td>{Moment(user._tags._lastModifiedOn).format('DD-MM-YYYY HH:mm')}</td>
+                    <td>
+                      <button type='button' onClick={(e) => this.delete(e, user._id)}>Delete</button>
+                      <button type='button' onClick={(e) => this.completeInputs(e, user)}>Update</button>
+                    </td>
+                  </tr>
+                </React.Fragment>
               })}
               </tbody>
             </table>
+            <ReactPaginate
+                previousLabel={"prev"}
+                nextLabel={"next"}
+                breakLabel={"..."}
+                breakClassName={"break-me"}
+                pageCount={this.state.pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={this.handlePageClick}
+                containerClassName={"pagination"}
+                subContainerClassName={"pages pagination"}
+                activeClassName={"active"}/>
           </div>
         </div>
     );
