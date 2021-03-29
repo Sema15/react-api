@@ -67,7 +67,8 @@ class App extends Component {
           console.log(err);
         });
   }
-  setFilter(e, sortType){
+
+  setFilter(e, sortType) {
     let filteredList
     // eslint-disable-next-line default-case
     switch (sortType) {
@@ -234,146 +235,135 @@ class App extends Component {
     return (
         <div className="container">
           <div>
-            <form onSubmit={(e) => this.onSubmit(e)}>
-              <div className="row">
-                <div className="col-25">
-                  <label htmlFor="id">User ID:</label>
-                </div>
-                <div className="col-75">
-                  <input
-                      name="id"
-                      id="id"
-                      ref='id'
-                      type="text"
-                      readOnly
-                      disabled
-                      className="form-control"
-                      value={this.state.user.id}
-                      onChange={(e) => this.handleInput(e)}
-                  />
-                </div>
+            <form className="ui form" onSubmit={(e) => this.onSubmit(e)}>
+              <div className="field">
+                <label htmlFor="id">User ID:</label>
+                <input
+                    name="id"
+                    id="id"
+                    ref='id'
+                    type="text"
+                    readOnly
+                    disabled
+                    className="form-control"
+                    value={this.state.user.id}
+                    onChange={(e) => this.handleInput(e)}
+                />
               </div>
-              <div className="row">
-                <div className="col-25">
-                  <label htmlFor="name">User name:</label>
-                </div>
-                <div className="col-75">
-                  <input
-                      name="name"
-                      id="name"
-                      ref='name'
-                      type="text"
-                      maxLength='60'
-                      className="form-control"
-                      value={this.state.user.name}
-                      pattern="^[A-Za-zА-Яа-яЁё\s]+$"
-                      onChange={(e) => this.handleInput(e)}
-                      required
-                  />
-                </div>
+              <div className="field">
+                <label htmlFor="name">User name:</label>
+                <input
+                    name="name"
+                    id="name"
+                    ref='name'
+                    type="text"
+                    maxLength='60'
+                    className="form-control"
+                    value={this.state.user.name}
+                    pattern="^[A-Za-zА-Яа-яЁё\s]+$"
+                    onChange={(e) => this.handleInput(e)}
+                    required
+                />
               </div>
-              <div className="row">
-                <div className="col-25">
-                  <label htmlFor="surname">User surname:</label>
-                </div>
-                <div className="col-75">
-                  <input
-                      name="surname"
-                      id="surname"
-                      ref='surname'
-                      pattern="^[A-Za-zА-Яа-яЁё\s]+$"
-                      type="text"
-                      maxLength='60'
-                      className="form-control"
-                      value={this.state.user.surname}
-                      onChange={(e) => this.handleInput(e)}
-                      required
-                  />
-                </div>
+              <div className="field">
+                <label htmlFor="surname">User surname:</label>
+                <input
+                    name="surname"
+                    id="surname"
+                    ref='surname'
+                    pattern="^[A-Za-zА-Яа-яЁё\s]+$"
+                    type="text"
+                    maxLength='60'
+                    className="form-control"
+                    value={this.state.user.surname}
+                    onChange={(e) => this.handleInput(e)}
+                    required
+                />
               </div>
-              <div className="row">
-                <div className="col-25">
-                  <label htmlFor="dob">User date-of-birthday:</label>
-                </div>
-                <div className="col-75">
-                  <InputMask mask="99.99.9999"
-                             pattern="^([0-2][0-9]|(3)[0-1])(\.)(((0)[0-9])|((1)[0-2]))(\.)\d{4}$"
-                             name="dob"
-                             id="dob"
-                             ref='dob'
-                             type="text"
-                             className="form-control"
-                             title='31.12.1xxx'
-                             value={this.state.user.dob}
-                             onChange={(e) => this.handleInput(e)}
-                             required
-                  />
-                </div>
+              <div className="field">
+                <label htmlFor="dob">User DOB:</label>
+                <InputMask mask="99.99.9999"
+                           pattern="^([0-2][0-9]|(3)[0-1])(\.)(((0)[0-9])|((1)[0-2]))(\.)\d{4}$"
+                           name="dob"
+                           id="dob"
+                           ref='dob'
+                           type="text"
+                           className="form-control"
+                           title='31.12.1xxx'
+                           value={this.state.user.dob}
+                           onChange={(e) => this.handleInput(e)}
+                           required
+                />
               </div>
-              <div className="row">
-                <div className="col-25">
-                  <label htmlFor="phone">User phone:</label>
-                </div>
-                <div className="col-75">
-                  <InputMask mask="0(99)9999999"
-                             name="phone"
-                             id="phone"
-                             ref='phone'
-                             type="text"
-                             className="form-control"
-                             value={this.state.user.phone}
-                             onChange={(e) => this.handleInput(e)}
-                             required
-                  />
-                </div>
+              <div className="field">
+                <label htmlFor="phone">User phone:</label>
+                <InputMask mask="0(99)9999999"
+                           name="phone"
+                           id="phone"
+                           ref='phone'
+                           type="text"
+                           className="form-control"
+                           value={this.state.user.phone}
+                           onChange={(e) => this.handleInput(e)}
+                           required
+                />
               </div>
-              <div className="row">
-                <div className="col-25">
-                  <label htmlFor="email">User email:</label>
-                </div>
-                <div className="col-75">
-                  <input
-                      name="email"
-                      id="email"
-                      ref='email'
-                      type="text"
-                      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-                      className="form-control"
-                      title='xxxx@xxxx.xx'
-                      value={this.state.user.email}
-                      onChange={(e) => this.handleInput(e)}
-                      required
-                  />
-                </div>
+              <div className="field">
+                <label htmlFor="email">User email:</label>
+                <input
+                    name="email"
+                    id="email"
+                    ref='email'
+                    type="text"
+                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                    className="form-control"
+                    title='xxxx@xxxx.xx'
+                    value={this.state.user.email}
+                    onChange={(e) => this.handleInput(e)}
+                    required
+                />
               </div>
-              <div className="form-btns__wrp">
-                <button type="submit" onClick={() => (this.setState({button: 1}))}>
-                  Add
+              <div className="ui buttons ">
+                <button
+                    type="submit"
+                    className="ui button"
+                    onClick={() => (this.setState({button: 1}))}>Add
                 </button>
-                <button disabled={this.state.button} type="submit" onClick={() => (this.setState({button: 0}))}>
-                  Update
+                <button
+                    className="ui button"
+                    disabled={this.state.button}
+                    type="submit"
+                    onClick={() => (this.setState({button: 0}))}>Update
                 </button>
-                <button type='button' onClick={(e) => this.clearFormInputs(e)}>
-                  Clear
+                <button
+                    className="ui button"
+                    type='button'
+                    onClick={(e) => this.clearFormInputs(e)}>Clear
                 </button>
               </div>
             </form>
           </div>
-          <button
-              disabled={this.state.filterBy === 'name'}
-              onClick={(e) => this.setFilter(e, 'name')}>Name filter
-          </button>
-          <button
-              disabled={this.state.filterBy === 'surname'}
-              onClick={(e) => this.setFilter(e, 'surname')}>Surname filter
-          </button>
-          <button
-              disabled={this.state.filterBy === '_id'}
-              onClick={(e) => this.setFilter(e, '_id')}>all
-          </button>
+          <div className="ui buttons">
+            <button
+                className="ui button"
+                disabled={this.state.filterBy === 'name'}
+                onClick={(e) => this.setFilter(e, 'name')}>Name filter
+            </button>
+            <button
+                className="ui button"
+                disabled={this.state.filterBy === 'surname'}
+                onClick={(e) => this.setFilter(e, 'surname')}>Surname filter
+            </button>
+            <button
+                className="ui button"
+                disabled={this.state.filterBy === '_id'}
+                onClick={(e) => this.setFilter(e, '_id')}>all
+            </button>
+          </div>
+
           <div className='userList'>
-            <table>
-              <tbody>
+            <table className="ui single line table">
+              <thead>
               <tr>
                 <th>Name</th>
                 <th>Surname</th>
@@ -384,6 +374,8 @@ class App extends Component {
                 <th>Update&nbsp;user&nbsp;date</th>
                 <th></th>
               </tr>
+              </thead>
+              <tbody>
 
               {this.state && this.state.paginationData.map((user, index) => {
                 return <React.Fragment key={index}>
@@ -396,15 +388,18 @@ class App extends Component {
                     <td>{Moment(user._tags._createdOn).format('DD-MM-YYYY HH:mm')}</td>
                     <td>{Moment(user._tags._lastModifiedOn).format('DD-MM-YYYY HH:mm')}</td>
                     <td>
-                      <button type='button' onClick={(e) => this.delete(e, user._id)}>Delete</button>
-                      <button type='button' onClick={(e) => this.completeInputs(e, user)}>Update</button>
+                      <div className="ui buttons">
+                        <button className="ui button" onClick={(e) => this.delete(e, user._id)}>Delete</button>
+                        <div className="or"></div>
+                        <button className="ui positive button" onClick={(e) => this.completeInputs(e, user)}>Update</button>
+                      </div>
                     </td>
                   </tr>
                 </React.Fragment>
               })}
               </tbody>
             </table>
-            {this.state.pageCount > 1? <ReactPaginate
+            {this.state.pageCount > 1 ? <ReactPaginate
                 previousLabel={"<"}
                 nextLabel={">"}
                 breakLabel={"..."}
@@ -415,7 +410,7 @@ class App extends Component {
                 onPageChange={this.handlePageClick}
                 containerClassName={"pagination"}
                 subContainerClassName={"pages pagination"}
-                activeClassName={"active"}/>: null }
+                activeClassName={"active"}/> : null}
 
           </div>
         </div>
