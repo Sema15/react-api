@@ -17,6 +17,8 @@ class App extends Component {
       offset: 0,
       data: [],
       paginationData: [],
+      filteredListtt: [],
+      filterBy: '_id',
       perPage: 10,
       currentPage: 0,
       user: {
@@ -64,6 +66,25 @@ class App extends Component {
         .catch(err => {
           console.log(err);
         });
+  }
+  setFilter(e, sortType){
+    let filteredList
+    // eslint-disable-next-line default-case
+    switch (sortType) {
+      case 'name':
+        filteredList = this.state.paginationData.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'surname':
+        filteredList = this.state.paginationData.sort((a, b) => a.surname.localeCompare(b.surname));
+        break;
+      case '_id':
+        filteredList = this.state.paginationData.sort((a, b) => a._id.localeCompare(b._id));
+        break;
+    }
+    this.setState({
+      filteredListtt: filteredList,
+      filterBy: sortType
+    })
   }
 
   handlePageClick = (e) => {
@@ -134,6 +155,7 @@ class App extends Component {
               this.componentDidMount();
               this.setState({
                 isUpdate: true,
+                filterBy: '_id'
               })
             }
 
@@ -208,17 +230,6 @@ class App extends Component {
     )
   }
 
-  // getSocialIcons() {
-  //   return [
-  //     {text: 'User ID:', name: 'id'},
-  //     {text: 'User name:', name: 'name'},
-  //     {text: 'User surname:', name: 'surname'},
-  //     {text: 'User date-of-birthday:', name: 'dob', mask: '99.99.9999'},
-  //     {text: 'User phone:', name: 'phone', mask: '0(99)9999999'},
-  //     {text: 'User email:', name: 'email'},
-  //   ]
-  // }
-
   render() {
     return (
         <div className="container">
@@ -255,6 +266,7 @@ class App extends Component {
                       maxLength='60'
                       className="form-control"
                       value={this.state.user.name}
+                      pattern="^[A-Za-zА-Яа-яЁё\s]+$"
                       onChange={(e) => this.handleInput(e)}
                       required
                   />
@@ -269,6 +281,7 @@ class App extends Component {
                       name="surname"
                       id="surname"
                       ref='surname'
+                      pattern="^[A-Za-zА-Яа-яЁё\s]+$"
                       type="text"
                       maxLength='60'
                       className="form-control"
@@ -284,11 +297,13 @@ class App extends Component {
                 </div>
                 <div className="col-75">
                   <InputMask mask="99.99.9999"
+                             pattern="^([0-2][0-9]|(3)[0-1])(\.)(((0)[0-9])|((1)[0-2]))(\.)\d{4}$"
                              name="dob"
                              id="dob"
                              ref='dob'
                              type="text"
                              className="form-control"
+                             title='31.12.1xxx'
                              value={this.state.user.dob}
                              onChange={(e) => this.handleInput(e)}
                              required
@@ -322,7 +337,9 @@ class App extends Component {
                       id="email"
                       ref='email'
                       type="text"
+                      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                       className="form-control"
+                      title='xxxx@xxxx.xx'
                       value={this.state.user.email}
                       onChange={(e) => this.handleInput(e)}
                       required
@@ -342,12 +359,22 @@ class App extends Component {
               </div>
             </form>
           </div>
+          <button
+              disabled={this.state.filterBy === 'name'}
+              onClick={(e) => this.setFilter(e, 'name')}>Name filter
+          </button>
+          <button
+              disabled={this.state.filterBy === 'surname'}
+              onClick={(e) => this.setFilter(e, 'surname')}>Surname filter
+          </button>
+          <button
+              disabled={this.state.filterBy === '_id'}
+              onClick={(e) => this.setFilter(e, '_id')}>all
+          </button>
           <div className='userList'>
             <table>
               <tbody>
               <tr>
-                <th>№</th>
-                <th>ID</th>
                 <th>Name</th>
                 <th>Surname</th>
                 <th>DOB</th>
@@ -361,8 +388,6 @@ class App extends Component {
               {this.state && this.state.paginationData.map((user, index) => {
                 return <React.Fragment key={index}>
                   <tr>
-                    <td>{index + 1}</td>
-                    <td>{user._id}</td>
                     <td>{user.name}</td>
                     <td>{user.surname}</td>
                     <td>{user.dob}</td>

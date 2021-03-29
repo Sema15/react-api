@@ -57,6 +57,14 @@ input[type=submit] {
     height: 41px;
 }
 
+.col-75 input:valid {
+    border-color: green;
+}
+
+.col-75 input:invalid {
+    border-color: red;
+}
+
 /* Clear floats after the columns */
 .row:after {
     content: "";
