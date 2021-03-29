@@ -3,6 +3,7 @@
     display: flex;
     list-style: none;
     outline: none;
+    padding: 0;
 }
 
 .pagination > .active > a {

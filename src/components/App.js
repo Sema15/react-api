@@ -404,9 +404,9 @@ class App extends Component {
               })}
               </tbody>
             </table>
-            <ReactPaginate
-                previousLabel={"prev"}
-                nextLabel={"next"}
+            {this.state.pageCount > 1? <ReactPaginate
+                previousLabel={"<"}
+                nextLabel={">"}
                 breakLabel={"..."}
                 breakClassName={"break-me"}
                 pageCount={this.state.pageCount}
@@ -415,7 +415,8 @@ class App extends Component {
                 onPageChange={this.handlePageClick}
                 containerClassName={"pagination"}
                 subContainerClassName={"pages pagination"}
-                activeClassName={"active"}/>
+                activeClassName={"active"}/>: null }
+
           </div>
         </div>
     );
