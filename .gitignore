@@ -6,6 +6,9 @@
 # testing
 /coverage
 
+# IDEs and editors
+/.idea
+
 # production
 /build
 
