@@ -165,7 +165,6 @@ class Home extends Component {
     }
   };
 
-
   delete(e, userId) {
     // delete entity - DELETE
     e.preventDefault();
